@@ -58,16 +58,16 @@ app.get("*.css", (req, res) => {
   /**
    * When a css file is requested, /public/css is searched
    */
-  res.sendFile(__dirname + `/public/css${req.originalUrl}`);
-  console.log(`/public/css${req.originalUrl}`);
+  res.sendFile(__dirname + `/public/css/${req.path.split("/")[2]}`);
+  console.log(`/public/css/${req.path.split("/")[2]}`);
 });
 
 app.get("/scripts/*.js", (req, res) => {
   /**
    * when a js file is requested, /public/scripts is searched
    */
-  res.sendFile(__dirname + `/public/scripts${req.originalUrl}`);
-  console.log(`/public/scripts${req.originalUrl}`);
+  res.sendFile(__dirname + `/public/scripts/${req.path.split("/")[2]}`);
+  console.log(`/public/scripts/${req.path.split("/")[2]}`);
 });
 
 app.post("/post", (req, res) => {
