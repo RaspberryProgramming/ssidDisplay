@@ -10,77 +10,105 @@ const port = 3000;
 //Preprocessors
 
 app.use(
-    bodyParser.urlencoded({
-        extended: false,
-    })
+  bodyParser.urlencoded({
+    extended: false,
+  })
 );
 app.use(bodyParser.json());
 
 //Creating Functions and Variables
 
 global.database = {
-    logs: [],
-    ssids: [],
+  logs: [], // when log is used it stores each log here
+  ssids: [], // All ssids are stored here
 };
 
 function log(info) {
-    let logText = `[${Date.now()}]: ${info}`;
-    database.logs.push(logText);
-    console.log(logText);
+  /**
+   * receives a log, stores it to the database, and prints it to the display
+   */
+  let logText = `[${Date.now()}]: ${info}`;
+  database.logs.push(logText);
+  console.log(logText);
 }
 
 //socket.io
 
-io.on("connection", function (socket) {
-    console.log("a user connected");
-    socket.emit("init", {
-        ssids: database.ssids
-    });
-    socket.on("disconnect", function () {
-        console.log("user disconnected");
-    });
+io.on("connection", function(socket) {
+  /**
+   * Run when a new web client connects
+   */
+  console.log("a user connected"); // Logs that a user has connected
+  socket.emit("init", {
+    // Sends an init with previous ssids to the new client
+    ssids: database.ssids,
+  });
 });
 
 //Setting up each page
 
 app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/public/html/index.html");
+  /**
+   * When a user connects, they are send the index.html file
+   */
+  res.sendFile(__dirname + "/public/html/index.html");
 });
 
 app.get("*.css", (req, res) => {
-    res.sendFile(__dirname + `/public/css${req.originalUrl}`);
-    console.log(`/public/css${req.originalUrl}`);
+  /**
+   * When a css file is requested, /public/css is searched
+   */
+  res.sendFile(__dirname + `/public/css${req.originalUrl}`);
+  console.log(`/public/css${req.originalUrl}`);
 });
 
 app.get("/scripts/*.js", (req, res) => {
-    res.sendFile(__dirname + `/public/scripts${req.originalUrl}`);
-    console.log(`/public/scripts${req.originalUrl}`);
+  /**
+   * when a js file is requested, /public/scripts is searched
+   */
+  res.sendFile(__dirname + `/public/scripts${req.originalUrl}`);
+  console.log(`/public/scripts${req.originalUrl}`);
 });
 
 app.post("/post", (req, res) => {
-    let ssid = req.body.ssid;
-    if (database.ssids.indexOf(ssid) === -1) {
-        let output = `[${Date.now()}] ${ssid}`;
-        database.ssids.push(output);
-        log(`${ssid} has been found!`);
-        io.emit("ssid", output);
-    } else {
-        log("Error");
-    }
+  /**
+   * Used when a node finds a new ssid. The post request will contain an ssid in the format like the following:
+   * {ssid: "SSID"}
+   * The ssid is stored in the local database, then it is sent to all web clients.
+   */
+  let ssid = req.body.ssid; // Extract ssid
 
-    res.send({
-        ssid: ssid,
-    });
+  if (database.ssids.indexOf(ssid) === -1) {
+    // Check if the ssid exists already
+
+    let output = `[${Date.now()}] ${ssid}`; // Setup output format
+
+    database.ssids.push(output); // Push the ssid to the database
+
+    log(`${ssid} has been found!`); // Log that the ssid is found
+
+    io.emit("ssid", output); // send new ssid+time to all clients
+  } else {
+    log("SSID %s exists." % ssid); // If the ssid exists
+  }
+
+  res.send({
+    ssid: ssid,
+  });
 });
 
-app.use(favicon(__dirname + "/public/images/favicon.jpg"));
+app.use(favicon(__dirname + "/public/images/favicon.jpg")); // Send favicon when requested
 
 app.use((req, res) => {
-    res.status(404);
-    console.log(
-        `${req.body.host} connected to the server. They requested ${req.path}, but this page was unavailable.`
-    );
-    res.send("Error 404");
+  /**
+   * Used when requested webpage is not found.
+   */
+  res.status(404); // set page to 404
+  log(
+    // Log that a user requested invalid page
+    `${req.body.host} connected to the server. They requested ${req.path}, but this page was unavailable.`
+  );
+  res.send("Error 404"); // Send Error 404 to user
 });
 
 http.listen(port, () => console.log(`Running on port ${port}.`));
