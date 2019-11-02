@@ -66,7 +66,6 @@ async function log(info) {
 }
 
 //socket.io
-
 io.on("connection", function(socket) {
   /**
    * Run when a new web client connects
@@ -84,11 +83,11 @@ io.on("connection", function(socket) {
       }
     }
     console.log(ssids);
-  socket.emit("init", {
-    // Sends an init with previous ssids to the new client
+    socket.emit("init", {
+      // Sends an init with previous ssids to the new client
       ssids: ssidsArray,
+    });
   });
-});
 });
 
 //Setting up each page
@@ -100,6 +99,9 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/html/index.html");
 });
 
+app.get("/logs", async (req, res) => {
+  res.sendFile(__dirname + "/public/html/logs.html");
+});
 app.get("*.css", (req, res) => {
   /**
    * When a css file is requested, /public/css is searched
