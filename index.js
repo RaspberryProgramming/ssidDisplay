@@ -4,6 +4,11 @@ const favicon = require("express-favicon");
 const path = require("path");
 const bodyParser = require("body-parser");
 var io = require("socket.io")(http);
+const { Sequelize, Model, DataTypes } = require("sequelize");
+const sequelize = new Sequelize({
+  dialect: "sqlite",
+  storage: "database.sqlite",
+});
 
 const port = 3000;
 
@@ -16,19 +21,47 @@ app.use(
 );
 app.use(bodyParser.json());
 
-//Creating Functions and Variables
+// Setup Database
+class logs extends Model {}
+logs.init(
+  {
+    time: DataTypes.TIME,
+    log: DataTypes.STRING,
+  },
+  { sequelize, modelName: "logs" }
+);
+
+class ssids extends Model {}
+ssids.init(
+  {
+    time: DataTypes.TIME,
+    ssid: DataTypes.STRING,
+  },
+  { sequelize, modelName: "ssids" }
+);
+
+ssids.sync();
+logs.sync();
 
 global.database = {
   logs: [], // when log is used it stores each log here
   ssids: [], // All ssids are stored here
 };
 
-function log(info) {
+// Needed functions
+async function log(info) {
   /**
    * receives a log, stores it to the database, and prints it to the display
    */
-  let logText = `[${Date.now()}]: ${info}`;
-  database.logs.push(logText);
+  let time = Date.now();
+  let logText = `[${time}]: ${info}`;
+  //database.logs.push(logText);
+  const logdata = await logs.create({
+    log: info,
+    time: time,
+  });
+
+  io.emit("log", logText);
   console.log(logText);
 }
 
@@ -38,11 +71,24 @@ io.on("connection", function(socket) {
   /**
    * Run when a new web client connects
    */
-  console.log("a user connected"); // Logs that a user has connected
+  log("New User Connected");
+  socket.on("requestSSIDs", async function(msg) {
+    log("Sending ssid lists");
+    let ssidsArray = [];
+    const ssiddata = await ssids.findAll({});
+    if (ssiddata) {
+      for (i in ssiddata) {
+        ssidsArray.push(
+          `[${ssiddata[i].get("time")}] ${ssiddata[i].get("ssid")}`
+        );
+      }
+    }
+    console.log(ssids);
   socket.emit("init", {
     // Sends an init with previous ssids to the new client
-    ssids: database.ssids,
+      ssids: ssidsArray,
   });
+});
 });
 
 //Setting up each page
@@ -70,7 +116,7 @@ app.get("/scripts/*.js", (req, res) => {
   console.log(`/public/scripts/${req.path.split("/")[2]}`);
 });
 
-app.post("/post", (req, res) => {
+app.post("/post", async (req, res) => {
   /**
    * Used when a node finds a new ssid. The post request will contain an ssid in the format like the following:
    * {ssid: "SSID"}
@@ -78,18 +124,22 @@ app.post("/post", (req, res) => {
    */
   let ssid = req.body.ssid; // Extract ssid
 
-  if (database.ssids.indexOf(ssid) === -1) {
+  if (ssids.findAll({ where: { ssid: ssid } })) {
     // Check if the ssid exists already
 
-    let output = `[${Date.now()}] ${ssid}`; // Setup output format
+    //database.ssids.push(output); // Push the ssid to the database
+    let time = Date.now();
 
-    database.ssids.push(output); // Push the ssid to the database
+    const ssiddata = await ssids.create({
+      ssid: ssid,
+      time: time,
+    });
 
     log(`${ssid} has been found!`); // Log that the ssid is found
 
-    io.emit("ssid", output); // send new ssid+time to all clients
+    io.emit("ssid", `[${time}] ${ssid}`); // send new ssid+time to all clients
   } else {
-    log("SSID %s exists." % ssid); // If the ssid exists
+    log("SSID %s already exists." % ssid); // If the ssid exists
   }
 
   res.send({
