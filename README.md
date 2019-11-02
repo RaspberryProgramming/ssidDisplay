@@ -2,9 +2,9 @@
 
 I'll make this look better later. Also I'll add an install script.
 
-# Getting Started
+## Getting Started
 
-**Requirements**
+### Requirements
 
 - git
 - node and npm
@@ -12,23 +12,32 @@ I'll make this look better later. Also I'll add an install script.
 - scapy for python3
 - requests for python3
 
-  **Install Dependencies**
+### Install Dependencies
 
-npm Install
+    `npm Install`
 
-**running the server**
+### Running the server
 
-npm start
+    `npm start`
 
 or
 
-node index.js
+    `node index.js`
 
-**Connect**
-Connect to http://localhost:3000/ to get the website
+### Connecting
 
-**Sending ssids (This is just to show proof of concept)**
+Connect to [http://localhost:3000/](http://localhost:3000/) to get the ssid log page. Following is a few notable keybinds:
+
+`a: Toggles autoscroll`
+
+`h: Displays help`
+
+### Sending ssids (This is just to show proof of concept)
+
 if python3's alias is python in your operating system
-python captureNode.py
+
+    `python captureNode.py`
+
 if python3's alias is python3
-python3 captureNode.py
+
+    `python3 captureNode.py`
