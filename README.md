@@ -14,15 +14,15 @@ I'll make this look better later. Also I'll add an install script.
 
 ### Install Dependencies
 
-    `npm Install`
+    npm Install
 
 ### Running the server
 
-    `npm start`
+    npm start
 
 or
 
-    `node index.js`
+    node index.js
 
 ### Connecting
 
@@ -36,8 +36,8 @@ Connect to [http://localhost:3000/](http://localhost:3000/) to get the ssid log 
 
 if python3's alias is python in your operating system
 
-    `python captureNode.py`
+    python captureNode.py
 
 if python3's alias is python3
 
-    `python3 captureNode.py`
+    python3 captureNode.py
