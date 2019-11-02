@@ -1,29 +1,33 @@
 <html>
-
-<head>
+  <head>
     <link rel="stylesheet" type="text/css" href="site.css" />
-    <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
-</head>
+    <link
+      href="https://fonts.googleapis.com/css?family=VT323&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<body>
+  <body>
     <div id="about" style="display:none;">
-        <p id="abouttitle">About Page</p>
-        <p id="aboutinfo">Hey you found it, this should have an indent. If not oh well. There isn't much to this page
-            but I'll outline a few key parts. Below you'll see a list of keys and their purposes. Keep them in mind.</p>
-        <p id="keybindinfo">a: toggle autoscroll</p>
-        <p id="keybindinfo">h: toggle about page</p>
-
+      <p id="abouttitle">About Page</p>
+      <p id="aboutinfo">
+        Hey you found it, this should have an indent. If not oh well. There
+        isn't much to this page but I'll outline a few key parts. Below you'll
+        see a list of keys and their purposes. Keep them in mind.
+      </p>
+      <p id="keybindinfo">a: toggle autoscroll</p>
+      <p id="keybindinfo">h: toggle about page</p>
     </div>
     <p id="title">
-        Logged SSIDS:
+      Logged SSIDS:
     </p>
     <div id="ssids"></div>
     <button onclick="autoscrollToggle()" id="asbtn">autoscroll: off</button>
     <button>useless button</button>
-</body>
-<script src="/socket.io/socket.io.js"></script>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
 
-<script>
+  <script>
     let autoscroll = false;
     let socket = io();
     let blink = 0;
@@ -31,96 +35,89 @@
 
     //functions
     function autoscrollToggle() {
+      let elem = document.getElementById("asbtn");
 
-        let elem = document.getElementById("asbtn");
-
-        if (autoscroll) {
-
-            autoscroll = false;
-            elem.style.color = "brown";
-            elem.style.backgroundColor = "red";
-            elem.innerHTML = "autoscroll: Off";
-
-        } else {
-
-            autoscroll = true;
-            elem.style.color = "lightblue";
-            elem.style.backgroundColor = "green";
-            elem.innerHTML = "autoscroll: On";
-
-        }
-    };
+      if (autoscroll) {
+        autoscroll = false;
+        elem.style.color = "brown";
+        elem.style.backgroundColor = "red";
+        elem.innerHTML = "autoscroll: Off";
+      } else {
+        autoscroll = true;
+        elem.style.color = "lightblue";
+        elem.style.backgroundColor = "green";
+        elem.innerHTML = "autoscroll: On";
+      }
+    }
 
     function aboutToggle() {
-        let elem = document.getElementById("about");
-        console.log(elem.style.display);
-        if (aboutHidden) {
-            aboutHidden = false;
-            elem.style.display = "";
-            console.log("inherit");
-        } else {
-            aboutHidden = true;
-            elem.style.display = "none";
-            console.log("hidden");
-        }
-    };
+      let elem = document.getElementById("about");
+      console.log(elem.style.display);
+      if (aboutHidden) {
+        aboutHidden = false;
+        elem.style.display = "";
+        console.log("inherit");
+      } else {
+        aboutHidden = true;
+        elem.style.display = "none";
+        console.log("hidden");
+      }
+    }
 
     // Socket
-    socket.on("init", function (msg) {
-        var div = document.getElementById("ssids");
-        for (ssid in msg.ssids) {
-            div.innerHTML += `<p>${msg.ssids[ssid]}<\p>`;
-        }
-        div.scrollTop = div.scrollHeight;
+    socket.on("init", function(msg) {
+      console.log("init");
+      var div = document.getElementById("ssids");
+      for (ssid in msg.ssids) {
+        div.innerHTML += `<p>${msg.ssids[ssid]}<\p>`;
+      }
+      div.scrollTop = div.scrollHeight;
+    });
+    socket.on("ssid", function(msg) {
+      console.log(msg);
+      var div = document.getElementById("ssids");
+      div.innerHTML += `<p>${msg}<\p>`;
 
-    })
-    socket.on("ssid", function (msg) {
-        console.log(msg);
-        var div = document.getElementById("ssids");
-        div.innerHTML += `<p>${msg}<\p>`;
-
-        if (!autoscroll) {
-            blink = 2;
-        }
+      if (!autoscroll) {
+        blink = 2;
+      }
     });
 
     // autoscroll
-    window.setInterval(function () {
-        if (autoscroll) {
-            let elem = document.getElementById("ssids");
-            elem.scrollTop = elem.scrollHeight;
-        }
+    window.setInterval(function() {
+      if (autoscroll) {
+        let elem = document.getElementById("ssids");
+        elem.scrollTop = elem.scrollHeight;
+      }
     }, 500);
 
-    window.setInterval(function () {
-        if (blink > 0) {
-            let elem = document.getElementById("ssids");
-            if (blink % 2 === 0) {
-                elem.style.backgroundColor = "white";
-            } else {
-                elem.style.backgroundColor = document.querySelector(
-                    "ssids.background-color"
-                );
-            }
-            blink--;
+    window.setInterval(function() {
+      if (blink > 0) {
+        let elem = document.getElementById("ssids");
+        if (blink % 2 === 0) {
+          elem.style.backgroundColor = "white";
+        } else {
+          elem.style.backgroundColor = document.querySelector(
+            "ssids.background-color"
+          );
         }
+        blink--;
+      }
     }, 1000);
-
 
     //autoscroll toggle
 
-
-    window.onkeypress = function (ev) {
-        switch (ev.key) {
-            case "a":
-                autoscrollToggle();
-                break;
-            case "h":
-                aboutToggle();
-                break;
-        }
-
+    window.onkeypress = function(ev) {
+      switch (ev.key) {
+        case "a":
+          autoscrollToggle();
+          break;
+        case "h":
+          aboutToggle();
+          break;
+      }
     };
-</script>
 
+    socket.emit("requestSSIDs", "");
+  </script>
 </html>
