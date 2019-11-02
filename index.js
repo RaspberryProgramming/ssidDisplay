@@ -104,8 +104,8 @@ app.get("*.css", (req, res) => {
   /**
    * When a css file is requested, /public/css is searched
    */
-  res.sendFile(__dirname + `/public/css/${req.path.split("/")[2]}`);
-  console.log(`/public/css/${req.path.split("/")[2]}`);
+  res.sendFile(__dirname + `/public/css/${req.path.split("/")[1]}`);
+  console.log(`/public/css/${req.path.split("/")[1]}`);
 });
 
 app.get("/scripts/*.js", (req, res) => {
