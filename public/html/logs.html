@@ -21,13 +21,18 @@
     <p id="title">
       Logged LOGS:
     </p>
-    <div id="logs"></div>
-    <button onclick="autoscrollToggle()" id="asbtn">autoscroll: off</button>
+    <div id="logs">
+      <div id="text"></div>
+      <p id="cursor" , style="display:hidden;">
+        #
+      </p>
+    </div>
+    <button onclick="autoscrollToggle()" id="asbtn">autoscroll: on</button>
   </body>
   <script src="/socket.io/socket.io.js"></script>
 
   <script>
-    let autoscroll = false;
+    let autoscroll = true; // autoscroll is on by default
     let socket = io();
     let blink = 0;
     let aboutHidden = true;
@@ -66,7 +71,7 @@
     // Socket
     socket.on("init", function(msg) {
       console.log("init");
-      var div = document.getElementById("logs");
+      var div = document.getElementById("text");
       for (log in msg.logs) {
         div.innerHTML += `<p>${msg.logs[log]}<\p>`;
       }
@@ -74,7 +79,7 @@
     });
     socket.on("log", function(msg) {
       console.log(msg);
-      var div = document.getElementById("logs");
+      var div = document.getElementById("text");
       div.innerHTML += `<p>${msg}<\p>`;
 
       if (!autoscroll) {
@@ -104,6 +109,17 @@
       }
     }, 1000);
 
+    window.setInterval(function() {
+      let elem = document.getElementById("cursor");
+      if (elem.style.color === "black") {
+        let text = document.getElementById("text");
+        elem.style.background = text.style.color;
+        elem.style.color = text.style.color;
+      } else {
+        elem.style.background = "black";
+        elem.style.color = "black";
+      }
+    }, 1000);
     //autoscroll toggle
 
     window.onkeypress = function(ev) {
