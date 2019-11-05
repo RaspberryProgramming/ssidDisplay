@@ -1,6 +1,7 @@
 #title {
-  background-color: burlywood;
+  background-color: lightgray;
   color: black;
+  border: gray;
   text-align: center;
   border-style: solid;
   border-radius: 10px;
@@ -12,7 +13,11 @@
   font-size: 40px;
   margin: 10px;
 }
-
+#cursor {
+  background-color: limegreen;
+  height: 14px;
+  width: 8px;
+}
 #aboutinfo {
   text-align: left;
   font-size: 18px;
@@ -39,27 +44,28 @@
 #asbtn {
   position: absolute;
   bottom: 0;
-  background-color: darkred;
+  background-color: green;
   color: lightblue;
-  margin: 5px;
+  margin: 10px;
   font-family: "VT323", monospace;
 }
 
 #logs {
+  position: center;
   border-color: slategray;
   box-sizing: content-box;
   background-color: black;
   object-fit: contain;
   color: limegreen;
   display: block;
-  height: 90%;
+  height: 80%;
   max-height: 100%;
   overflow: auto;
   margin: 10px;
   padding: auto;
   scroll-margin: left;
   text-align: left;
-  border-width: 10px;
+  border-width: 5px;
   border-style: inset;
   border-radius: 20px;
   padding: 10px;
@@ -72,5 +78,5 @@ body {
   margin: 0px;
   margin-top: 10px;
   font-family: "VT323", monospace;
-  background-color: tan;
+  background-color: rgb(94, 110, 126);
 }
