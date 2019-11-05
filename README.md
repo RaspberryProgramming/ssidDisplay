@@ -32,6 +32,8 @@ Connect to [http://localhost:3000/](http://localhost:3000/) to get the ssid log 
 
 `h: Displays help`
 
+Connect to [http://localhost:3000/logs/](http://localhost:3000/logs/) to get a log page that has all logs including error logs from the server. This will require a login in a later update.
+
 ### Sending ssids (This is just to show proof of concept)
 
 if python3's alias is python in your operating system
