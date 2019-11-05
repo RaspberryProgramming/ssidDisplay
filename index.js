@@ -70,9 +70,23 @@ io.on("connection", function(socket) {
   /**
    * Run when a new web client connects
    */
-  log("New User Connected");
+  //log("New User Connected");
+  socket.on("requestLogs", async function(msg) {
+    log("Sending previous logs");
+    let logsArray = [];
+    const logdata = await logs.findAll({});
+    if (logdata) {
+      for (i in logdata) {
+        logsArray.push(`[${logdata[i].get("time")}] ${logdata[i].get("log")}`);
+      }
+    }
+    socket.emit("init", {
+      // Sends an init with previous ssids to the new client
+      logs: logsArray,
+    });
+  });
   socket.on("requestSSIDs", async function(msg) {
-    log("Sending ssid lists");
+    //log("Sending ssid lists");
     let ssidsArray = [];
     const ssiddata = await ssids.findAll({});
     if (ssiddata) {
