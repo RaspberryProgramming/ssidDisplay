@@ -21,9 +21,8 @@
     <p id="title">
       Logged SSIDS:
     </p>
-    <div id="ssids"></div>
+    <div id="logs"></div>
     <button onclick="autoscrollToggle()" id="asbtn">autoscroll: off</button>
-    <button>useless button</button>
   </body>
   <script src="/socket.io/socket.io.js"></script>
 
@@ -67,7 +66,7 @@
     // Socket
     socket.on("init", function(msg) {
       console.log("init");
-      var div = document.getElementById("ssids");
+      var div = document.getElementById("logs");
       for (ssid in msg.ssids) {
         div.innerHTML += `<p>${msg.ssids[ssid]}<\p>`;
       }
@@ -75,7 +74,7 @@
     });
     socket.on("ssid", function(msg) {
       console.log(msg);
-      var div = document.getElementById("ssids");
+      var div = document.getElementById("logs");
       div.innerHTML += `<p>${msg}<\p>`;
 
       if (!autoscroll) {
@@ -86,19 +85,19 @@
     // autoscroll
     window.setInterval(function() {
       if (autoscroll) {
-        let elem = document.getElementById("ssids");
+        let elem = document.getElementById("logs");
         elem.scrollTop = elem.scrollHeight;
       }
     }, 500);
 
     window.setInterval(function() {
       if (blink > 0) {
-        let elem = document.getElementById("ssids");
+        let elem = document.getElementById("logs");
         if (blink % 2 === 0) {
           elem.style.backgroundColor = "white";
         } else {
           elem.style.backgroundColor = document.querySelector(
-            "ssids.background-color"
+            "logs.background-color"
           );
         }
         blink--;
