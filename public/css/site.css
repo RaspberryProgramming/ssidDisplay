@@ -1,60 +1,76 @@
 #title {
-    background-color: lightgray;
-    color: black;
-    text-align: center;
+  background-color: burlywood;
+  color: black;
+  text-align: center;
+  border-style: solid;
+  border-radius: 10px;
+  margin: 10px;
 }
 
 #abouttitle {
-    text-align: center;
-    font-size: 40px;
-    margin: 10px;
+  text-align: center;
+  font-size: 40px;
+  margin: 10px;
 }
 
 #aboutinfo {
-    text-align: left;
-    font-size: 18px;
-    margin: 10px;
-    text-indent: 20px;
+  text-align: left;
+  font-size: 18px;
+  margin: 10px;
+  text-indent: 20px;
 }
 
 #keybindinfo {
-    text-align: center;
-    font-size: 24px;
-    margin: 10px;
+  text-align: center;
+  font-size: 24px;
+  margin: 10px;
 }
 
 #about {
-    height: 100%;
-    width: 100%;
-    z-index: 99 !important;
-    position: absolute;
-    background-color: white;
+  top: 0px;
+  margin: 0px;
+  height: 100%;
+  width: 100%;
+  z-index: 99 !important;
+  position: absolute;
+  background-color: white;
 }
 
 #asbtn {
-    background-color: darkred;
-    color: lightblue;
-    margin: 5px;
-    font-family: 'VT323', monospace;
+  position: absolute;
+  bottom: 0;
+  background-color: darkred;
+  color: lightblue;
+  margin: 5px;
+  font-family: "VT323", monospace;
 }
 
-#ssids {
-    box-sizing: border-box;
-    background-color: black;
-    color: green;
-    display: block;
-    margin: 0;
-    scroll-margin: left;
-    text-align: left;
-    overflow: auto;
-    height: 90%;
-    border-style: solid;
-    border-radius: 10px;
-    padding: 10px;
-    animation: slide infinite 3s alternate;
+#logs {
+  border-color: slategray;
+  box-sizing: content-box;
+  background-color: black;
+  object-fit: contain;
+  color: limegreen;
+  display: block;
+  height: 90%;
+  max-height: 100%;
+  overflow: auto;
+  margin: 10px;
+  padding: auto;
+  scroll-margin: left;
+  text-align: left;
+  border-width: 10px;
+  border-style: inset;
+  border-radius: 20px;
+  padding: 10px;
+  animation: slide infinite 3s alternate;
 }
 
 body {
-    font-family: 'VT323', monospace;
-    background-color: gray;
+  height: 100%;
+  max-height: 95%;
+  margin: 0px;
+  margin-top: 10px;
+  font-family: "VT323", monospace;
+  background-color: tan;
 }
