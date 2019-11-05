@@ -18,10 +18,13 @@ ssid = input("What ssid would you like to send: ")
 
 def main():
     while True:
-        packet = sniff(
-            count=1, filter="type mgt subtype beacon", iface=interface)  # Capture packets
-        print(packet)  # extract ssid
+        packet = sniff(count=1, filter="type mgt subtype beacon", iface=interface)  # Capture pack>
+        try:
+            print(packet[0][Dot11Beacon][Dot11Elt].info.decode())  # extract ssid
+        except:
+            print(packet[0])
         # sendSSID(ssid)
+
 
 
 def sendSSID(ssid, addr=defaultAddress):
