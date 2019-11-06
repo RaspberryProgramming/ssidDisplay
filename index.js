@@ -140,7 +140,7 @@ app.post("/post", async (req, res) => {
    */
   let ssid = req.body.ssid; // Extract ssid
 
-  if (ssids.findAll({ where: { ssid: ssid } })) {
+  if (await ssids.count({ where: { ssid: ssid } }) === 0) {
     // Check if the ssid exists already
 
     //database.ssids.push(output); // Push the ssid to the database
