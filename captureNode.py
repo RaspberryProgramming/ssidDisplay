@@ -35,5 +35,5 @@ def sendSSID(ssid, addr=defaultAddress):
 
     requests.post(addr, json=content)  # Send post request
 
-
-main()
+if __name__ in '__main__':
+    main()
