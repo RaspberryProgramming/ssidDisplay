@@ -33,20 +33,29 @@
 
   <script>
     let autoscroll = true; // autoscroll is on by default
-    let socket = io();
-    let blink = 0;
-    let aboutHidden = true;
+    let socket = io(); // Used to communicate with the backend
+    let blink = 0; // Stores a value so we can keep the cursor blinking
+    let aboutHidden = true; // stores a value to determine whether the about page is hidden or not
 
     //functions
     function autoscrollToggle() {
+      /**
+       * Used to toggle the autoscroll functionality 
+       */
+
+      // retrieve the autoscroll button element
       let elem = document.getElementById("asbtn");
 
-      if (autoscroll) {
+      if (autoscroll) { // If autoscroll is already on
+
+        // disable autoscroll, change it's style and text
         autoscroll = false;
         elem.style.color = "brown";
         elem.style.backgroundColor = "red";
         elem.innerHTML = "autoscroll: Off";
       } else {
+
+        // Turn on autoscroll and change the buttons text/style
         autoscroll = true;
         elem.style.color = "lightblue";
         elem.style.backgroundColor = "green";
@@ -55,13 +64,24 @@
     }
 
     function aboutToggle() {
+      /**
+       * Used to toggle the about display
+       */
+
+      // Retrieve the about element
       let elem = document.getElementById("about");
-      console.log(elem.style.display);
+
+      // If about is hidden
       if (aboutHidden) {
+
+        // Set aboutHidden to false, remove "none" display 
+        //     value so it will inherit that property
         aboutHidden = false;
         elem.style.display = "";
         console.log("inherit");
       } else {
+
+        // Set aboutHidden to true and hide the menu
         aboutHidden = true;
         elem.style.display = "none";
         console.log("hidden");
@@ -70,18 +90,34 @@
 
     // Socket
     socket.on("init", function(msg) {
+      // Runs at initial socket connection
+
       console.log("init");
+      // Get the "text" div
       var div = document.getElementById("text");
+      
+      // append any previous logs to the display
       for (log in msg.logs) {
         div.innerHTML += `<p>${msg.logs[log]}<\p>`;
       }
+
+      // Scroll to most recent log
       div.scrollTop = div.scrollHeight;
     });
+
     socket.on("log", function(msg) {
+      // Recieves a log and appends it to the display
+
       console.log(msg);
+      
+      // retrieves text div
       var div = document.getElementById("text");
+
+      // appends the message to the div
       div.innerHTML += `<p>${msg}<\p>`;
 
+      // if autoscroll is disabled, blink will be set to 2 in order
+      //    to notify the user via visual effect
       if (!autoscroll) {
         blink = 2;
       }
