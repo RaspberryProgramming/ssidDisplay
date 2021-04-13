@@ -125,33 +125,52 @@
 
     // autoscroll
     window.setInterval(function() {
-      if (autoscroll) {
+      // Every 500ms, autoscroll will update the location of the logs to the bottom and will "auto scroll" to the newest log
+      if (autoscroll) { // If enabled
+
+        // Grab logs element and scroll to newest log
         let elem = document.getElementById("logs");
         elem.scrollTop = elem.scrollHeight;
       }
     }, 500);
 
     window.setInterval(function() {
-      if (blink > 0) {
+      // Every 1000ms / 1s, blink variable will be checked and if it's over 0, it will blink the display and update blink variable
+      if (blink > 0) { // If blink is over 0
+
+        // grab logs
         let elem = document.getElementById("logs");
+
+        // given that blink is even, the background will turn white
         if (blink % 2 === 0) {
           elem.style.backgroundColor = "white";
-        } else {
+        } else { // if blink is odd, set background color to default
           elem.style.backgroundColor = document.querySelector(
             "logs.background-color"
           );
         }
+
+        // decrement blink
         blink--;
       }
     }, 1000);
 
     window.setInterval(function() {
+      // Every 1000ms/1s, update the cursor
+
+      // Grab the cursor
       let elem = document.getElementById("cursor");
+
+      // if the cursor is currently black
       if (elem.style.color === "black") {
+
+        // also grab the text, and set the cursor to the text's color
         let text = document.getElementById("text");
         elem.style.background = text.style.color;
         elem.style.color = text.style.color;
       } else {
+
+        // set the cursor to black
         elem.style.background = "black";
         elem.style.color = "black";
       }
@@ -159,16 +178,19 @@
     //autoscroll toggle
 
     window.onkeypress = function(ev) {
+
+      // keys used to toggle some menu or feature
       switch (ev.key) {
-        case "a":
+        case "a": // a will toggle the autoscroll
           autoscrollToggle();
           break;
-        case "h":
+        case "h": // h will toggle the about menu
           aboutToggle();
           break;
       }
     };
 
+    // emit requestLogs once page is loaded to intitialize chain of log updates
     socket.emit("requestLogs", "");
   </script>
 </html>
