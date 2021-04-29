@@ -10,10 +10,11 @@ const sequelize = new Sequelize({
   storage: "database.sqlite",
 });
 
-const port = 3000;
+const port = 3000; // default http port is 3000
 
 //Preprocessors
 
+// body parser is enabled
 app.use(
   bodyParser.urlencoded({
     extended: false,
@@ -40,7 +41,7 @@ ssids.init(
   { sequelize, modelName: "ssids" }
 );
 
-ssids.sync();
+ssids.sync(); // Sync database
 logs.sync();
 
 global.database = {
@@ -53,15 +54,18 @@ async function log(info) {
   /**
    * receives a log, stores it to the database, and prints it to the display
    */
-  let time = Date.now();
-  let logText = `[${time}]: ${info}`;
-  //database.logs.push(logText);
-  const logdata = await logs.create({
+  let time = Date.now(); // grab the current time
+
+  let logText = `[${time}]: ${info}`; // generate log text
+
+  const logdata = await logs.create({ // store log data
     log: info,
     time: time,
   });
 
-  io.emit("log", logText);
+  io.emit("log", logText); // send the log to all clients
+
+  // display log to the terminal
   console.log(logText);
 }
 
@@ -70,8 +74,12 @@ io.on("connection", function(socket) {
   /**
    * Run when a new web client connects
    */
-  //log("New User Connected");
+
+  
   socket.on("requestLogs", async function(msg) {
+    /**
+     * Activated when a client requests a lot
+     */
     log("Sending previous logs");
     let logsArray = [];
     const logdata = await logs.findAll({});
@@ -86,7 +94,7 @@ io.on("connection", function(socket) {
     });
   });
   socket.on("requestSSIDs", async function(msg) {
-    //log("Sending ssid lists");
+    // Sends array of SSIDs to client
     let ssidsArray = [];
     const ssiddata = await ssids.findAll({});
     if (ssiddata) {
@@ -96,7 +104,7 @@ io.on("connection", function(socket) {
         );
       }
     }
-    console.log(ssids);
+    
     socket.emit("init", {
       // Sends an init with previous ssids to the new client
       ssids: ssidsArray,
