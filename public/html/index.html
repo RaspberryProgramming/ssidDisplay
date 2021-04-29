@@ -39,14 +39,24 @@
 
     //functions
     function autoscrollToggle() {
+      /**
+       * Toggles autoscroll functionality
+       */
+
+      // grab autoscroll button
       let elem = document.getElementById("asbtn");
 
+      // If autoscroll is already enabled
       if (autoscroll) {
+
+        // Set to disabled style and set to false
         autoscroll = false;
         elem.style.color = "brown";
         elem.style.backgroundColor = "red";
         elem.innerHTML = "autoscroll: Off";
       } else {
+
+        // Set to enabled style and set to true
         autoscroll = true;
         elem.style.color = "lightblue";
         elem.style.backgroundColor = "green";
@@ -55,12 +65,18 @@
     }
 
     function aboutToggle() {
+      /**
+       * Toggles about menu
+       */
+      
+      // grab about element
       let elem = document.getElementById("about");
-      console.log(elem.style.display);
+
+      // Toggle display and enable/disable about menu
       if (aboutHidden) {
         aboutHidden = false;
         elem.style.display = "";
-        console.log("inherit");
+        console.log("");
       } else {
         aboutHidden = true;
         elem.style.display = "none";
@@ -70,18 +86,33 @@
 
     // Socket
     socket.on("init", function(msg) {
+      /**
+       * Recieves initial array of stored ssids
+       */
       console.log("init");
       var div = document.getElementById("text");
+
+      // Iterate through ssids
       for (ssid in msg.ssids) {
         div.innerHTML += `<p>${msg.ssids[ssid]}<\p>`;
       }
+
+      // Set scroll to end of window
       div.scrollTop = div.scrollHeight;
     });
+
     socket.on("ssid", function(msg) {
-      console.log(msg);
+      /**
+       * Recieves a single ssid and adds to the display
+       */
+
+      // Grab text element
       var div = document.getElementById("text");
+
+      // Append ssid
       div.innerHTML += `<p>${msg}<\p>`;
 
+      // if autoscroll isn't enabled, blink display
       if (!autoscroll) {
         blink = 2;
       }
@@ -89,15 +120,24 @@
 
     // autoscroll
     window.setInterval(function() {
+      // every half a second, autoscroll will force scroll to the bottom of the display
       if (autoscroll) {
+        // if enabled, scroll to bottom
         let elem = document.getElementById("logs");
         elem.scrollTop = elem.scrollHeight;
       }
     }, 500);
 
     window.setInterval(function() {
+      /**
+       * Auto Blink text on display. This will notify the user of updates to 
+       * the display if autoscroll is disabled. This will run every second.
+       */
       if (blink > 0) {
+        // If blink is more than 0, start to blink
         let elem = document.getElementById("logs");
+
+        // toggle color of blink based on even/odd value of blink
         if (blink % 2 === 0) {
           elem.style.backgroundColor = "white";
         } else {
@@ -105,19 +145,29 @@
             "logs.background-color"
           );
         }
+        // decrement blink
         blink--;
       }
+
     }, 1000);
 
     window.setInterval(function() {
+      /**
+       * Blink the cursor once a second
+       */
       let elem = document.getElementById("cursor");
+
+      // If the cursor is black, toggle to the color of text
       if (elem.style.color === "black") {
         let text = document.getElementById("text");
         elem.style.background = text.style.color;
         elem.style.color = text.style.color;
+
+      // If the cursor isn't black, toggle to black
       } else {
         elem.style.background = "black";
         elem.style.color = "black";
+
       }
     }, 1000);
 
@@ -126,14 +176,17 @@
     window.onkeypress = function(ev) {
       switch (ev.key) {
         case "a":
+          // Toggle autoscroll on "a" keypress
           autoscrollToggle();
           break;
         case "h":
+          // toggle about menu on "h" keypress
           aboutToggle();
           break;
       }
     };
 
+    // Initialize ssid requests
     socket.emit("requestSSIDs", "");
   </script>
 </html>
